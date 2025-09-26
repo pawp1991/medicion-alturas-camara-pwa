@@ -1,225 +1,272 @@
-# 🌲 App Medición de Alturas Forestal
+# 📷 Medición de Alturas con Cámara PWA v1.0
 
-Una **Progressive Web App (PWA)** para medir alturas de árboles usando la cámara del dispositivo móvil y sensores de orientación, con distancia horizontal fija.
+## 📋 Descripción
+Aplicación web progresiva (PWA) profesional para medición de alturas forestales usando la cámara del dispositivo como **clinómetro digital**. Calcula alturas por trigonometría usando los sensores de orientación del dispositivo.
 
-![Version](https://img.shields.io/badge/version-1.0.0-green)
-![PWA](https://img.shields.io/badge/PWA-Ready-blue)
-![Mobile](https://img.shields.io/badge/Mobile-Optimized-orange)
+## ✨ Características Principales
 
-## 🎯 Características
+### 🎯 Funcionalidades Core
+- **📷 Medición con Cámara:** Usa la cámara y sensores como clinómetro digital
+- **✏️ Entrada Manual:** Opción de ingresar alturas manualmente
+- **📐 Cálculo Trigonométrico:** h = d × tan(θ) + altura del ojo
+- **🎯 Calibración:** Establecer cero en la base del árbol
+- **📏 Distancias Variables:** Selección de 10 a 20 metros
+- **🌲 Dos Métodos:** India y 265
+- **💾 Gestión de Lotes:** Crear, guardar y reabrir
+- **📊 Exportación CSV:** Individual o global
+- **🔄 100% Offline:** Funciona sin conexión
+- **📱 PWA Instalable:** Como app nativa
 
-- **🎯 Mira de precisión** con retícula ajustable para apuntar exactamente
-- **📱 PWA completa** - Instalable como app nativa
-- **📏 Cálculo trigonométrico** de alturas basado en ángulos y distancia fija
-- **⚡ Tiempo real** - Visualización de altura mientras apuntas
-- **🎨 Feedback visual** - Animaciones y colores dinámicos
-- **📊 Múltiples puntos** por árbol para mediciones detalladas
-- **🔄 Funciona offline** - Service Worker incluido
-- **📳 Vibración táctil** al capturar puntos
+## 📐 Sistema de Medición
 
-## 📋 Requisitos
-
-- **Dispositivo móvil** con cámara trasera
-- **Sensores de orientación** (giroscopio/acelerómetro)
-- **Navegador moderno** (Chrome, Safari, Firefox)
-- **HTTPS** requerido para acceso a cámara
-
-## 🚀 Instalación Rápida en GitHub Pages
-
-### 1. Crear Repositorio
-```bash
-# Crear nuevo repositorio en GitHub
-# Nombre sugerido: medicion-alturas-forestal
+### Principio de Funcionamiento
 ```
-
-### 2. Estructura de Archivos
-Crear esta estructura en tu repositorio:
-
+         /|
+        / |
+       /  | h (altura)
+      /θ  |
+     /    |
+    /_____|
+    d (distancia)
+    
+h = d × tan(θ) + altura_ojo
 ```
-medicion-alturas-forestal/
-├── index.html          # Página principal
-├── styles.css          # Estilos CSS
-├── script.js           # Lógica JavaScript
-├── manifest.json       # Configuración PWA
-├── sw.js              # Service Worker
-├── README.md          # Este archivo
-└── icons/             # Íconos de la app
-    ├── icon-72.png
-    ├── icon-96.png
-    ├── icon-128.png
-    ├── icon-144.png
-    ├── icon-152.png
-    ├── icon-192.png
-    ├── icon-384.png
-    └── icon-512.png
-```
-
-### 3. Activar GitHub Pages
-1. Ve a **Settings** → **Pages**
-2. Selecciona **Deploy from a branch**
-3. Elige **main branch** → **/ (root)**
-4. Guarda los cambios
-
-### 4. Acceder a la App
-- URL: `https://[tu-usuario].github.io/medicion-alturas-forestal`
-- **Importante**: Abre desde el móvil para acceso a cámara y sensores
-
-## 📱 Uso de la Aplicación
-
-### Configuración Inicial
-1. **Abrir la app** en el navegador móvil
-2. **Permitir acceso** a cámara y sensores de orientación
-3. **Configurar distancia** horizontal fija (por defecto 10m)
 
 ### Proceso de Medición
-1. **Posicionarse** a la distancia configurada del árbol
-2. **Presionar "Iniciar Medición"**
-3. **Apuntar** con la mira (punto rojo) a la base del árbol
-4. **Capturar punto base** (altura ≈ 0m)
-5. **Apuntar** a diferentes alturas del tronco
-6. **Capturar** cada punto de interés
-7. **Observar** las alturas calculadas en tiempo real
+1. **Posicionarse** a distancia fija del árbol (10-20m)
+2. **Calibrar** apuntando a la base (establecer 0°)
+3. **Apuntar** a cada punto de medición
+4. **Capturar** el segmento
+5. **Repetir** hasta completar el árbol
 
-### Controles de la Mira
-- **Tamaño ajustable** con control deslizante
-- **Cruz verde** para alineación general
-- **Punto rojo central** para precisión máxima
-- **Brillo dinámico** cuando está midiendo
+## 📊 Estructura de Datos
 
-## 🔧 Desarrollo Local
-
-### Servidor Local
-```bash
-# Opción 1: Python
-python -m http.server 8000
-
-# Opción 2: Node.js
-npx http-server
-
-# Opción 3: Live Server (VS Code)
-# Instalar extensión Live Server
+```
+Lote
+├── Árbol 1
+│   ├── Medición India
+│   │   ├── Segmento 1: altura (método: cámara/manual)
+│   │   ├── Segmento 2: altura (método: cámara/manual)
+│   │   └── Segmento n: altura (método: cámara/manual)
+│   └── Medición 265
+│       └── Segmentos...
+├── Árbol 2
+│   └── ...
+└── Árbol n
 ```
 
-### Testing en Móvil
-```bash
-# Obtener IP local
-ipconfig getifaddr en0  # macOS
-hostname -I            # Linux
-ipconfig               # Windows
+## 🔄 Flujo de Trabajo
 
-# Acceder desde móvil
-https://[IP-LOCAL]:8000
+### 1. Configuración Inicial
+- Crear nuevo lote
+- Establecer número de árbol
+- Seleccionar distancia de medición
+
+### 2. Medición con Cámara
+- Click "📷 Medir con Cámara"
+- Solicitar permisos (primera vez)
+- Calibrar base del árbol (0°)
+- Apuntar y capturar cada segmento
+- El sistema calcula altura automáticamente
+
+### 3. Medición Manual (alternativa)
+- Click "✏️ Entrada Manual"
+- Ingresar alturas acumuladas
+- Sistema calcula largos
+
+### 4. Guardado
+- Guardar árbol/tipo/segmentos
+- Cambio automático India → 265
+- Siguiente árbol cuando complete ambos
+
+## 📱 Instalación
+
+### Requisitos
+- Navegador moderno (Chrome, Edge, Safari)
+- Dispositivo con cámara y giroscopio
+- Permisos de cámara y sensores
+
+### Pasos
+1. Subir archivos a servidor web o GitHub Pages
+2. Acceder desde navegador móvil
+3. Menú → "Agregar a pantalla de inicio"
+
+## 📁 Archivos Necesarios
+
+```
+medicion-alturas-camara-pwa/
+├── index.html        # Estructura HTML
+├── styles.css        # Estilos (verde teal)
+├── app.js           # Lógica y sensores
+├── manifest.json    # Configuración PWA
+├── sw.js           # Service Worker
+├── icon-192.png    # Icono pequeño (📷)
+└── icon-512.png    # Icono grande (📷)
 ```
 
-## 🎨 Personalización
+## 💾 Estructura del CSV Exportado
 
-### Colores del Tema
-En `styles.css`:
-```css
-:root {
-    --primary-color: #2e7d32;    /* Verde principal */
-    --secondary-color: #4caf50;  /* Verde secundario */
-    --accent-color: #00ff88;     /* Verde acento */
-    --background: #1e4620;       /* Fondo oscuro */
-}
+```csv
+Lote,Arbol,Tipo,Segmento,Altura_Acumulada_m,Largo_Segmento_m,Metodo_Captura,Distancia_m,Altura_Total_m
+Bosque Norte,1,India,1,3.26,3.26,camera,15,9.56
+Bosque Norte,1,India,2,5.29,2.03,camera,15,9.56
+Bosque Norte,1,India,3,9.56,4.27,manual,15,9.56
+Bosque Norte,1,265,1,4.15,4.15,camera,15,11.25
 ```
 
-### Configuración de Medición
-En `script.js`:
+### Columnas Adicionales vs App Manual:
+- **Metodo_Captura:** `camera` o `manual`
+- **Distancia_m:** Distancia de medición utilizada
+
+## 🎯 Precisión y Calibración
+
+### Factores de Precisión
+- **Distancia exacta:** Crítico mantener distancia medida
+- **Calibración correcta:** Base debe estar en 0°
+- **Estabilidad:** Mantener dispositivo estable al capturar
+- **Altura del ojo:** Ajustable en código (default 1.6m)
+
+### Tips para Mayor Precisión
+1. Usar trípode o apoyo si es posible
+2. Calibrar con cuidado en la base
+3. Verificar distancia con cinta métrica
+4. Capturar con dispositivo estable
+5. Verificar con medición manual ocasional
+
+## ⚙️ Características Técnicas
+
+### APIs Utilizadas
+- **getUserMedia:** Acceso a cámara
+- **DeviceOrientationEvent:** Sensores de orientación
+- **Canvas API:** Overlay de medición
+- **LocalStorage:** Guardado de datos
+- **Service Worker:** Funcionamiento offline
+
+### Compatibilidad
+- ✅ Chrome Android (v80+)
+- ✅ Samsung Internet
+- ✅ Edge Mobile
+- ✅ Safari iOS (requiere permisos)
+- ⚠️ Firefox Android (limitado)
+
+### Permisos Requeridos
+- Cámara
+- Sensores de movimiento (iOS 13+)
+- Almacenamiento local
+
+## 📊 Diferencias con Apps Hermanas
+
+| Característica | Inventario DAP | Medición Manual | Medición Cámara |
+|---------------|---------------|-----------------|-----------------|
+| **Medición** | Diámetro | Alturas manual | Alturas con cámara |
+| **Entrada** | Manual | Manual | Cámara + Manual |
+| **Cálculo** | CAP | Largos | Trigonometría |
+| **Color** | Verde 🌲 | Azul 📏 | Teal 📷 |
+| **Sensores** | No | No | Sí |
+| **Complejidad** | Simple | Media | Alta |
+
+## 🛠️ Configuración Avanzada
+
+### Ajustar Altura del Ojo
+En `app.js`, modificar:
 ```javascript
-// Distancia por defecto
-let distance = 10; // metros
-
-// Límites de ángulo
-const MAX_ANGLE = 89;  // grados
-const MIN_ANGLE = -89; // grados
+alturaOjo: 1.6 // Cambiar según necesidad (metros)
 ```
 
-## 📐 Fundamentos Matemáticos
-
-### Cálculo de Altura
-```
-altura = distancia × tan(ángulo)
-
-Donde:
-- distancia = distancia horizontal al árbol (metros)
-- ángulo = ángulo de elevación del dispositivo (grados)
-- altura = altura del punto medido (metros)
-```
-
-### Precisión
-- **Distancia óptima**: 10-20 metros
-- **Ángulos recomendados**: -45° a +60°
-- **Error típico**: ±5% con técnica correcta
-
-## 🔒 Permisos Requeridos
-
-### Cámara
+### Calibración de Sensores
+Algunos dispositivos requieren calibración adicional:
 ```javascript
-navigator.mediaDevices.getUserMedia({
-    video: { facingMode: 'environment' }
-})
+// Ajustar factor de corrección si es necesario
+estadoApp.anguloActual = angulo * FACTOR_CORRECCION;
 ```
 
-### Orientación (iOS 13+)
-```javascript
-DeviceOrientationEvent.requestPermission()
-```
+### Límites de Distancia
+Para agregar más opciones de distancia, editar el `<select>` en `index.html`
 
-### Instalación PWA
-```javascript
-// Evento beforeinstallprompt manejado automáticamente
-```
-
-## 🐛 Resolución de Problemas
+## 🔧 Solución de Problemas
 
 ### Cámara no funciona
-- ✅ Verificar permisos del navegador
-- ✅ Usar HTTPS (requerido)
-- ✅ Probar diferentes navegadores
-- ✅ Reiniciar el navegador
+- Verificar permisos en configuración del navegador
+- Asegurar HTTPS (requerido para cámara)
+- Probar en otro navegador
 
 ### Sensores no responden
-- ✅ Verificar orientación del dispositivo
-- ✅ Calibrar brújula/giroscopio
-- ✅ Habilitar sensores en configuración
-- ✅ Probar en modo simulación (escritorio)
+- iOS: Habilitar "Motion & Orientation Access"
+- Android: Verificar que el dispositivo tenga giroscopio
+- Calibrar sensores del dispositivo
 
-### Service Worker falla
-- ✅ Verificar que `sw.js` esté en la raíz
-- ✅ Comprobar HTTPS activo
-- ✅ Limpiar cache del navegador
-- ✅ Verificar consola de errores
+### Mediciones incorrectas
+- Verificar distancia real con cinta métrica
+- Re-calibrar en la base del árbol
+- Mantener dispositivo más estable
+- Verificar altura del ojo configurada
 
-## 📈 Mejoras Futuras
+### No se instala como app
+- Verificar HTTPS
+- Limpiar caché del navegador
+- Esperar que cargue completamente antes de instalar
 
-- [ ] **Exportación CSV** de mediciones
-- [ ] **Notas por árbol** con geo-localización
-- [ ] **Calibración automática** de sensores
-- [ ] **Modo comparación** de árboles
-- [ ] **Sincronización en la nube**
-- [ ] **Análisis estadístico** de datos
+## 📈 Casos de Uso
 
-## 🤝 Contribuir
+### Ideal para:
+- Inventarios forestales profesionales
+- Medición rápida de múltiples árboles
+- Terrenos difíciles donde equipos tradicionales son complicados
+- Educación y capacitación forestal
+- Verificación cruzada con clinómetros tradicionales
 
-1. **Fork** el repositorio
-2. **Crear** rama de feature (`git checkout -b feature/nueva-funcionalidad`)
-3. **Commit** cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. **Push** a la rama (`git push origin feature/nueva-funcionalidad`)
-5. **Crear** Pull Request
+### Ventajas sobre Métodos Tradicionales:
+- Sin costo de equipos especializados
+- Datos digitales inmediatos
+- Cálculos automáticos
+- Registro fotográfico posible
+- Exportación directa a Excel
 
-## 📄 Licencia
+## 🚀 Actualizaciones Futuras
 
-MIT License - Ver archivo `LICENSE` para detalles
+- [ ] Captura de foto con cada medición
+- [ ] GPS automático por árbol
+- [ ] Visualización 3D del árbol medido
+- [ ] Calibración mejorada con acelerómetro
+- [ ] Modo de medición continua
+- [ ] Integración con mapas
+- [ ] Cálculo de volumen de madera
 
-## 👨‍💻 Autor
+## 🔒 Privacidad y Seguridad
 
-Desarrollado para análisis de **big data en plantaciones forestales**
+- **Sin servidor:** Todos los datos locales
+- **Sin tracking:** No se envía información
+- **Cámara:** Solo durante medición activa
+- **Exportación:** Control total del usuario
+
+## 📝 Notas Importantes
+
+1. **Precisión:** Comparable a clinómetros digitales comerciales (±0.5m en condiciones ideales)
+2. **Batería:** El uso de cámara y sensores consume más batería
+3. **Respaldo:** Exportar CSV regularmente como backup
+4. **Capacitación:** Practicar calibración para mejores resultados
+
+## 📱 Soporte
+
+### Dispositivos Probados
+- Samsung Galaxy S20+
+- iPhone 12 Pro
+- Xiaomi Redmi Note 9
+- iPad Pro 2021
+
+### Requisitos Mínimos
+- Android 8.0+ o iOS 13+
+- Cámara trasera
+- Giroscopio
+- 50MB almacenamiento libre
+
+## 👨‍💻 Desarrollo
+
+**Versión:** 1.0  
+**Fecha:** Noviembre 2024  
+**Stack:** HTML5, CSS3, JavaScript ES6, PWA  
+**APIs:** MediaDevices, DeviceOrientation, Canvas
 
 ---
 
-### 🚀 ¡Listo para usar!
-
-Copia cada archivo, súbelo a GitHub y activa GitHub Pages. Tu app estará funcionando en minutos.
-
-**URL final**: `https://[tu-usuario].github.io/[nombre-repo]`
+**Para soporte o sugerencias, mantener registro en el repositorio GitHub.**

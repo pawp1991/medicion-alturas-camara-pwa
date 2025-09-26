@@ -3,129 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00695c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#2e7d32">
-    <title>Medición de Alturas - Cámara</title>
-    
-    <!-- PWA Manifest -->
+    <title>Medición de Alturas con Cámara v1.0</title>
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Google Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- Estilos CSS -->
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body>
     <div class="container">
-        <!-- Pantalla de inicio -->
-        <div id="startupScreen" class="startup-screen">
-            <div style="font-size: 48px; margin-bottom: 20px;">🌲</div>
-            <h2>Medición de Alturas Forestales</h2>
-            <p>Mide alturas de árboles usando la cámara de tu dispositivo con distancia horizontal fija</p>
-            <button onclick="initializeApp()" class="btn btn-primary" style="padding: 15px 30px;">
-                <i class="material-icons">camera_alt</i>
-                Iniciar Aplicación
-            </button>
+        <!-- Header -->
+        <header>
+            <h1>📷 Medición con Cámara</h1>
+            <span class="version">v1.0</span>
+        </header>
+
+        <!-- Información del Lote -->
+        <div class="form-section">
+            <h2>Información del Lote</h2>
+            
+            <div class="form-group">
+                <label for="lote">Nombre del Lote</label>
+                <input type="text" id="lote" placeholder="Ej: Bosque Norte">
+            </div>
+
+            <div class="lote-actions">
+                <button id="btnNuevoLote" class="btn btn-primary">
+                    📂 Nuevo Lote
+                </button>
+                <button id="btnAbrirLote" class="btn btn-info">
+                    📁 Abrir Lote Guardado
+                </button>
+            </div>
+
+            <!-- Lista de lotes guardados (oculta inicialmente) -->
+            <div id="lotesGuardados" class="lotes-list" style="display:none;"></div>
         </div>
 
-        <!-- Aplicación principal -->
-        <div id="mainApp" style="display: none;">
-            <div class="header">
-                <h1>
-                    <i class="material-icons">height</i>
-                    Medición de Alturas
-                </h1>
-            </div>
+        <!-- Configuración de Medición -->
+        <div class="form-section">
+            <h2>Configuración de Medición</h2>
+            
+            <div class="config-grid">
+                <div class="form-group">
+                    <label for="numeroArbol">Número de Árbol</label>
+                    <input type="number" id="numeroArbol" value="1" min="1">
+                </div>
 
-            <div id="cameraContainer" style="display: none;">
-                <video id="cameraView" autoplay playsinline></video>
-                <!-- Mira/Retícula -->
-                <div id="crosshair">
-                    <div id="crosshair-center"></div>
-                </div>
-                <!-- Indicador de altura en tiempo real -->
-                <div id="liveHeightIndicator">
-                    <span id="liveHeight">0.0</span> m
-                </div>
-                <div id="cameraOverlay">
-                    <div class="angle-indicator">
-                        Ángulo: <span id="angleDisplay">0°</span>
-                    </div>
+                <div class="form-group">
+                    <label for="tipoMedicion">Tipo de Medición</label>
+                    <select id="tipoMedicion">
+                        <option value="India">India</option>
+                        <option value="265">265</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Modo sin cámara -->
-            <div id="noCameraMode" class="no-camera" style="display: none;">
-                <i class="material-icons">videocam_off</i>
-                <h3>Cámara no disponible</h3>
-                <p>Para usar esta aplicación necesitas una cámara y sensores de orientación.</p>
-                <button onclick="requestCamera()" class="btn btn-primary">
-                    <i class="material-icons">refresh</i>
-                    Intentar nuevamente
-                </button>
+            <div class="form-group">
+                <label for="distancia">Distancia al Árbol (metros)</label>
+                <select id="distancia">
+                    <option value="10">10 metros</option>
+                    <option value="11">11 metros</option>
+                    <option value="12">12 metros</option>
+                    <option value="13">13 metros</option>
+                    <option value="14">14 metros</option>
+                    <option value="15" selected>15 metros</option>
+                    <option value="16">16 metros</option>
+                    <option value="17">17 metros</option>
+                    <option value="18">18 metros</option>
+                    <option value="19">19 metros</option>
+                    <option value="20">20 metros</option>
+                </select>
             </div>
 
-            <div id="controls">
-                <div class="info-panel">
-                    <div class="info-group">
-                        <div class="info-label">Distancia:</div>
-                        <div class="info-value"><span id="currentDistance">10</span> m</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Árbol:</div>
-                        <div class="info-value" id="treeCount">1</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Puntos:</div>
-                        <div class="info-value" id="pointCount">0</div>
-                    </div>
-                </div>
+            <!-- Estado actual -->
+            <div class="current-status">
+                <span>Árbol: <strong id="statusArbol">1</strong></span>
+                <span>Tipo: <strong id="statusTipo">India</strong></span>
+                <span>Distancia: <strong id="statusDistancia">15m</strong></span>
+                <span>Segmentos: <strong id="statusSegmentos">0</strong></span>
+            </div>
+        </div>
 
-                <div class="info-group status-group">
-                    <div class="info-label">Estado:</div>
-                    <div class="info-value" id="statusIndicator">Listo</div>
-                </div>
-
-                <div class="distance-container">
-                    <label>Distancia horizontal:</label>
-                    <input type="number" id="distanceInput" value="10" min="1" max="50" step="0.5">
-                    <span>metros</span>
-                </div>
-
-                <div class="button-group">
-                    <button onclick="startMeasurement()" class="btn btn-primary">
-                        <i class="material-icons">play_arrow</i>
-                        Iniciar Medición
-                    </button>
-                    <button onclick="capturePoint()" class="btn btn-secondary">
-                        <i class="material-icons">add_location</i>
-                        Capturar Punto
-                    </button>
-                </div>
-
-                <button onclick="newTree()" class="btn btn-warning">
-                    <i class="material-icons">autorenew</i>
-                    Nueva Medición
+        <!-- Modo de Medición -->
+        <div class="form-section">
+            <h2>Modo de Medición</h2>
+            
+            <div class="measurement-mode">
+                <button id="btnMedirCamara" class="btn btn-camera">
+                    📷 Medir con Cámara
                 </button>
                 
-                <!-- Control de tamaño de mira -->
-                <div class="crosshair-controls">
-                    <label>Tamaño de mira:</label>
-                    <input type="range" id="crosshairSize" min="40" max="100" value="60" 
-                           oninput="adjustCrosshairSize(this.value)">
-                </div>
-
-                <div id="measurementsList" class="measurements-list"></div>
+                <div class="divider">O</div>
+                
+                <button id="btnMedirManual" class="btn btn-manual">
+                    ✏️ Entrada Manual
+                </button>
             </div>
+
+            <!-- Vista de Cámara (oculta inicialmente) -->
+            <div id="cameraView" class="camera-container" style="display:none;">
+                <video id="videoElement" autoplay playsinline></video>
+                <canvas id="canvasOverlay"></canvas>
+                
+                <div class="camera-controls">
+                    <div class="angle-display">
+                        <span>Ángulo: <strong id="angleValue">0.0°</strong></span>
+                        <span>Altura: <strong id="heightValue">0.00m</strong></span>
+                    </div>
+                    
+                    <div class="camera-buttons">
+                        <button id="btnCalibrar" class="btn btn-warning">
+                            🎯 Calibrar Base (0°)
+                        </button>
+                        <button id="btnCapturar" class="btn btn-success">
+                            📸 Capturar Segmento
+                        </button>
+                        <button id="btnCerrarCamara" class="btn btn-danger">
+                            ❌ Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrada Manual (oculta inicialmente) -->
+            <div id="manualEntry" class="manual-entry" style="display:none;">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="numeroSegmento">Segmento N°</label>
+                        <input type="number" id="numeroSegmento" value="1" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura Acumulada (m)</label>
+                        <input type="number" id="altura" placeholder="Ej: 3.26" step="0.01" min="0">
+                    </div>
+                </div>
+                
+                <button id="btnAgregarSegmento" class="btn btn-primary">
+                    ➕ Agregar Segmento
+                </button>
+                
+                <button id="btnCerrarManual" class="btn btn-secondary">
+                    ↩️ Volver
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de Segmentos -->
+        <div class="form-section">
+            <h2>Segmentos Capturados</h2>
+            
+            <div id="listaSegmentos" class="segments-list">
+                <p class="empty-message">No hay segmentos capturados</p>
+            </div>
+
+            <!-- Botones de guardado -->
+            <div class="save-actions">
+                <button id="btnGuardarMedicion" class="btn btn-success">
+                    💾 Guardar Árbol/Tipo/Segmentos
+                </button>
+                <button id="btnSiguienteArbol" class="btn btn-warning" style="display:none;">
+                    ➡️ Siguiente Árbol
+                </button>
+            </div>
+        </div>
+
+        <!-- Resumen del Lote -->
+        <div class="form-section">
+            <h2>Resumen del Lote</h2>
+            <div id="resumenLote" class="summary">
+                <p>No hay mediciones guardadas aún</p>
+            </div>
+            
+            <!-- Acciones del lote -->
+            <div class="lote-final-actions">
+                <button id="btnGuardarLote" class="btn btn-info">
+                    💾 Guardar Lote
+                </button>
+                <button id="btnExportar" class="btn btn-success">
+                    📥 Exportar Lote Actual
+                </button>
+                <button id="btnLimpiar" class="btn btn-danger">
+                    🗑️ Limpiar Todo
+                </button>
+            </div>
+            
+            <!-- Exportación global -->
+            <div style="margin-top: 15px;">
+                <button id="btnExportarTodo" class="btn btn-warning" style="width: 100%;">
+                    📊 Exportar TODOS los Lotes (Global)
+                </button>
+                <small style="display: block; text-align: center; margin-top: 5px; color: #757575;">
+                    Descarga un solo CSV con todos los lotes medidos
+                </small>
+            </div>
+        </div>
+
+        <!-- Modal de calibración -->
+        <div id="modalCalibracion" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3>🎯 Calibración</h3>
+                <p>1. Posiciónese a <strong id="distanciaCalibracion">15</strong> metros del árbol</p>
+                <p>2. Apunte la cámara a la BASE del árbol</p>
+                <p>3. Presione "Establecer Cero" cuando esté listo</p>
+                <button id="btnEstablecerCero" class="btn btn-primary">
+                    Establecer Cero
+                </button>
+                <button id="btnCancelarCalibracion" class="btn btn-secondary">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- Estado de guardado -->
+        <div id="estadoGuardado" class="save-status">
+            Guardado automático activo
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
